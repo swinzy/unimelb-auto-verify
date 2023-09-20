@@ -1,8 +1,7 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "UnimelbAutoVerify",
     "version": "1.0",
-  
     "description": "Automatically fill in your 2FA code.",
     "content_scripts": [
       {

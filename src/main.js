@@ -44,8 +44,3 @@ observer.observe(oktaSignInElement, {
     childList: true,  // Observe child elements being added/removed
     subtree: true     // Observe all descendants
 });
-
-
-
-console.log(timeCode);
-

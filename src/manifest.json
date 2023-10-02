@@ -1,13 +1,17 @@
 {
-    "manifest_version": 3,
-    "name": "UnimelbAutoVerify",
-    "version": "1.0",
-    "description": "Automatically fill in your 2FA code.",
-    "content_scripts": [
-      {
-        "matches": ["*://sso.unimelb.edu.au/*"],
-        "js": ["main.js"]
-      }
-    ]
-  }
+  "manifest_version": 3,
+  "name": "UnimelbAutoVerify",
+  "version": "1.0",
+  "description": "Automatically fill in your 2FA code.",
+  "options_ui": {
+    "page": "options.html"
+  },
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["*://sso.unimelb.edu.au/*"],
+      "js": ["sha.js", "main.js"]
+    }
+  ]
+}
   

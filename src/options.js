@@ -2,6 +2,8 @@ const htmlElement = document.querySelector("html");
 const saveButton = document.getElementById("save-button");
 const secretBox = document.getElementById("otp-secret-input");
 const usernameBox = document.getElementById("username-input");
+const autoSubmitBox = document.getElementById("auto-submit-box");
+const showDecorBox = document.getElementById("show-decor-box");
 
 const NORMAL_BTN = "btn-primary";
 const SUCCESS_BTN = "btn-success";
@@ -35,6 +37,8 @@ const saveOptions = () => {
         {
             secret: secretBox.value,
             username: usernameBox.value.toUpperCase(),
+            showDecor: showDecorBox.checked,
+            autoSubmit: autoSubmitBox.checked,
         },
         () => {
             // Update status to let user know options were saved.
@@ -58,10 +62,14 @@ const restoreOptions = () => {
         {
             secret: "",
             username: "",
+            showDecor: true,
+            autoSubmit: true,
         },
         (items) => {
             secretBox.value = items.secret;
             usernameBox.value = items.username;
+            showDecorBox.checked = items.showDecor;
+            autoSubmitBox.checked = items.autoSubmit;
         }
     );
 };

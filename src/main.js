@@ -1,6 +1,3 @@
-// Debugging indicator
-document.body.style.border = "5px solid green";
-
 const checkOnMFAPage = () => {
     // Prompt for Google Authenticator
     var googleAuthElement = document.getElementsByClassName("challenge-authenticator--google_otp")
@@ -14,6 +11,11 @@ const checkOnMFAPage = () => {
 }
 
 const autoFillMFA = () => {
+    // Show effective decoration
+    if (showDecor)
+        document.body.style.border = "5px solid green";
+    else
+        document.body.style.border = "0";
 
     // Abort action if not on MFA page
     if (!checkOnMFAPage()) return;
@@ -55,7 +57,7 @@ const autoFillMFA = () => {
     credentialInput.dispatchEvent(event);
 
     // Automatically click "Verify" if possible
-    if (verifyButton)
+    if (autoSubmit && verifyButton)
         verifyButton.click();
     else
         console.log("UnimelbAutoVerify: Verify button not found. Please manually submit the code.");
@@ -80,17 +82,23 @@ const observer = new MutationObserver(autoFillMFA);
 // Do not expose otp secret to window
 let otpSecret = "";
 let username = "";
+let showDecor = true;
+let autoSubmit = true;
 
 // Load configurations and start autofill
 chrome.storage.sync.get(
     {
         secret: "",
         username: "",
+        showDecor: true,
+        autoSubmit: true,
     },
     (items) => {
         // Only start extension when relevant information is ready
         startAutofill();
         otpSecret = items.secret;
         username = items.username.toUpperCase();
+        showDecor = items.showDecor;
+        autoSubmit = items.autoSubmit;
     }
 );

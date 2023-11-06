@@ -14,6 +14,12 @@
         <div id="content-wrapper">
             <h5 class="mb-3">Options</h5>
             <div class="mb-3">
+                <label for="username-input" class="form-label">Username</label>
+                <input type="text" class="form-control text-uppercase" id="username-input"
+                       aria-describedby="username-desc">
+                <div id="username-desc" class="form-text">The verification code will only be autofilled if the username matches.</div>
+            </div>
+            <div class="mb-3">
                 <label for="otp-secret-input" class="form-label">OTP Secret</label>
                 <input type="password" class="form-control" placeholder="Your Unimelb Google Authenticator OTP Secret" id="otp-secret-input"
                        aria-describedby="otp-warning">
@@ -21,10 +27,13 @@
             </div>
             <button id="save-button" class="btn btn-primary animated">Save</button>
         </div>
-        <footer id="footer" class="position-relative pt-3 pb-4">
+        <footer id="footer" class="position-relative pt-3 pb-5">
             <a href="https://github.com/m1nicrusher/unimelb-auto-verify" target="_blank">
                 <img id="github-logo" class="position-absolute top-50 start-50 translate-middle" src="github-mark.svg"
                      alt="GitHub logo, linked to the project repository" />
+            </a>
+            <a href="https://github.com/m1nicrusher" target="_blank">
+                <p class="position-absolute top-100 start-50 translate-middle text-body-tertiary">@m1nicrusher</p>
             </a>
         </footer>
     </div>

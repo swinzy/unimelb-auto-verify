@@ -1,6 +1,7 @@
-const htmlElement = document.querySelector("html")
+const htmlElement = document.querySelector("html");
 const saveButton = document.getElementById("save-button");
 const secretBox = document.getElementById("otp-secret-input");
+const usernameBox = document.getElementById("username-input");
 
 const NORMAL_BTN = "btn-primary";
 const SUCCESS_BTN = "btn-success";
@@ -31,7 +32,10 @@ const changeTheme = (theme) => {
 // Saves options to chrome.storage
 const saveOptions = () => {
     chrome.storage.sync.set(
-        {secret: secretBox.value},
+        {
+            secret: secretBox.value,
+            username: usernameBox.value.toUpperCase(),
+        },
         () => {
             // Update status to let user know options were saved.
             saveButton.classList.add(SUCCESS_BTN);
@@ -51,9 +55,13 @@ const saveOptions = () => {
 // Restores options using the preferences stored in chrome.storage.
 const restoreOptions = () => {
     chrome.storage.sync.get(
-        {secret: ""},
+        {
+            secret: "",
+            username: "",
+        },
         (items) => {
             secretBox.value = items.secret;
+            usernameBox.value = items.username;
         }
     );
 };

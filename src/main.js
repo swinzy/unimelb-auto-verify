@@ -34,11 +34,15 @@ const autoFillMFA = () => {
         return;
     }
 
-    var username = identifierElement.innerText;
+    if (identifierElement.innerText.toUpperCase() !== username.toUpperCase()) {
+        console.log("UnimelbAutoVerify: Username does not match, action not applied.");
+        return;
+    }
+
     var totp = new jsOTP.totp();
     var timeCode = totp.getOtp(otpSecret);
 
-    console.log(`User name: ${username}, OTP: ${timeCode}`);
+    console.log(`OTP code ${timeCode} autofilled for user ${username.toUpperCase()}`);
 
     // Put MFA code in
     credentialInput.value = timeCode;
@@ -75,13 +79,18 @@ const observer = new MutationObserver(autoFillMFA);
 
 // Do not expose otp secret to window
 let otpSecret = "";
+let username = "";
 
 // Load configurations and start autofill
 chrome.storage.sync.get(
-    {secret: ""},
+    {
+        secret: "",
+        username: "",
+    },
     (items) => {
         // Only start extension when relevant information is ready
         startAutofill();
         otpSecret = items.secret;
+        username = items.username.toUpperCase();
     }
 );

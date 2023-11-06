@@ -52,8 +52,8 @@ I present, the `Unimelb Auto Verify` extension!
 
 ## Goals
 - [X] Supports username verification
-- [ ] Supports turning on/off effective decoration
-- [ ] Supports turning on/off auto click <kbd>Verify</kbd>
+- [X] Supports turning on/off effective decoration
+- [X] Supports turning on/off auto click <kbd>Verify</kbd>
 - [ ] Supports decoding Google Authenticator link
 - [ ] Supports decoding Google Authenticator QR code
 - [ ] Supports multi-account autofill

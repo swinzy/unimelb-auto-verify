@@ -51,7 +51,7 @@ I present, the `Unimelb Auto Verify` extension!
 > (An error of no greater than 30 seconds from the Unimelb server is generally acceptable)
 
 ## Goals
-- [ ] Supports username verification
+- [X] Supports username verification
 - [ ] Supports turning on/off effective decoration
 - [ ] Supports turning on/off auto click <kbd>Verify</kbd>
 - [ ] Supports decoding Google Authenticator link

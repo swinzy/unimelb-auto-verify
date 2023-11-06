@@ -17,10 +17,13 @@ Are you absolutely pissed by the fact that MFA verification pops up **EVERY SING
 Well now here is a solution!<br>
 I present, the `Unimelb Auto Verify` extension!
 
-## Disclaimer
+<br>
+
 > [!WARNING]
 > **USE AT YOUR OWN RISK!** <br>
 > MFA is designed to provide an extra layer of security. Users should be aware that the TOTP secret of their account is stored unencrypted on their device when using this extension. Always follow your university's policies regarding account access. I am not responsible for any security breaches or data loss caused by the use of this extension if you agree to use.
+
+<br>
 
 ## Use Case
 ### Prerequisite

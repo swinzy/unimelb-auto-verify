@@ -1,11 +1,32 @@
-const saveButton = document.getElementById("saveButton");
-const secretBox = document.getElementById("otpSecretInput");
+const htmlElement = document.querySelector("html")
+const saveButton = document.getElementById("save-button");
+const secretBox = document.getElementById("otp-secret-input");
 
 const NORMAL_BTN = "btn-primary";
 const SUCCESS_BTN = "btn-success";
 const SAVED = "Saved";
 const SAVE = "Save";
 const TIMEOUT_BTN_RES = 2000;
+
+const onThemeChange = (mutations) => {
+    for (const mutation of mutations) {
+        if (mutation.type !== "attributes" || mutation.attributeName !== "data-bs-theme")
+            return;
+        changeTheme(mutation.target.getAttribute("data-bs-theme"));
+    }
+}
+
+const changeTheme = (theme) => {
+    const githubLogo = document.getElementById("github-logo");
+    if (theme === "dark") {
+        // Dark theme
+        githubLogo.src = "github-mark-white.svg";
+    }
+    else {
+        // Default/light theme
+        githubLogo.src = "github-mark.svg";
+    }
+}
 
 // Saves options to chrome.storage
 const saveOptions = () => {
@@ -37,5 +58,8 @@ const restoreOptions = () => {
     );
 };
 
+const themeObserver = new MutationObserver(onThemeChange);
+themeObserver.observe(htmlElement, { attributes: true });
+changeTheme(htmlElement.getAttribute("data-bs-theme"));
 document.addEventListener("DOMContentLoaded", restoreOptions);
 saveButton.addEventListener("click", saveOptions);

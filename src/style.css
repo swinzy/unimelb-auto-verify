@@ -1,0 +1,23 @@
+.animated {
+    transition: all 200ms;
+}
+
+#body-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#content-wrapper {
+    flex-grow: 1;
+}
+
+#footer {
+    width: 100%;
+    height: auto;
+}
+
+#github-logo {
+    width: 32px;
+    height: 32px;
+}

@@ -2,6 +2,16 @@
     transition: all 200ms;
 }
 
+.center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* This is used to allow table cell to fill height of the table */
+.fake-height {
+    height: 1px;
+}
+
 #body-wrapper {
     min-height: 100vh;
     display: flex;
@@ -20,4 +30,9 @@
 #github-logo {
     width: 32px;
     height: 32px;
+}
+
+#uav-logo {
+    width: 128px;
+    height: auto;
 }

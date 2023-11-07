@@ -1,11 +1,16 @@
 {
   "manifest_version": 3,
-  "name": "UnimelbAutoVerify",
-  "version": "1.2",
-  "description": "Automatically fill in your 2FA code.",
-  "options_ui": {
-    "page": "options.html"
+  "name": "Unimelb Auto Verify",
+  "short_name": "UAV",
+  "version": "1.2.1",
+  "description": "Automatically fill in your MFA code for Unimelb SSO.",
+  "icons": {
+    "16": "res/logo16.png",
+    "32": "res/logo32.png",
+    "48": "res/logo48.png",
+    "128": "res/logo128.png"
   },
+  "options_page": "ui/options.html",
   "browser_specific_settings": {
     "gecko": {
       "id": "unimelb-auto-verify@sao.studio",

@@ -23,11 +23,11 @@ const changeTheme = (theme) => {
     const githubLogo = document.getElementById("github-logo");
     if (theme === "dark") {
         // Dark theme
-        githubLogo.src = "github-mark-white.svg";
+        githubLogo.src = "../res/github-mark-white.svg";
     }
     else {
         // Default/light theme
-        githubLogo.src = "github-mark.svg";
+        githubLogo.src = "../res/github-mark.svg";
     }
 }
 

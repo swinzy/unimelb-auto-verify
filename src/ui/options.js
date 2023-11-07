@@ -5,11 +5,19 @@ const usernameBox = document.getElementById("username-input");
 const autoSubmitBox = document.getElementById("auto-submit-box");
 const showDecorBox = document.getElementById("show-decor-box");
 
+const passwordSection = document.getElementById("passwd-section");
+const passwordBox = document.getElementById("passwd-input");
+const eaGroup = document.getElementById("ea-group");
+const eaOff = document.getElementById("ea-off");
+const eaOneClick = document.getElementById("ea-oc");
+const eaZeroClick = document.getElementById("ea-zc");
+
 const NORMAL_BTN = "btn-primary";
 const SUCCESS_BTN = "btn-success";
 const SAVED = "Saved";
 const SAVE = "Save";
 const TIMEOUT_BTN_RES = 2000;
+const HIDDEN = "collapse";
 
 const onThemeChange = (mutations) => {
     for (const mutation of mutations) {
@@ -31,6 +39,26 @@ const changeTheme = (theme) => {
     }
 }
 
+const getEasyAccessLevel = () => {
+    if (eaZeroClick.checked) return "zc";
+    if (eaOneClick.checked) return "oc";
+    return "off";
+}
+
+const setEasyAccessLevel = (easyAccessLevel) => {
+    if (easyAccessLevel === "off") {
+        eaOff.checked = true;
+    }
+    else if (easyAccessLevel === "oc") {
+        eaOneClick.checked = true;
+    }
+    else if (easyAccessLevel === "zc") {
+        eaZeroClick.checked = true;
+    }
+
+    showPasswordSection();
+}
+
 // Saves options to chrome.storage
 const saveOptions = () => {
     chrome.storage.sync.set(
@@ -39,6 +67,8 @@ const saveOptions = () => {
             username: usernameBox.value.toUpperCase(),
             showDecor: showDecorBox.checked,
             autoSubmit: autoSubmitBox.checked,
+            easyAccess: getEasyAccessLevel(),
+            passwd: passwordBox.value,
         },
         () => {
             // Update status to let user know options were saved.
@@ -64,18 +94,34 @@ const restoreOptions = () => {
             username: "",
             showDecor: true,
             autoSubmit: true,
+            easyAccess: "",
+            passwd: "",
         },
         (items) => {
             secretBox.value = items.secret;
             usernameBox.value = items.username;
             showDecorBox.checked = items.showDecor;
             autoSubmitBox.checked = items.autoSubmit;
+            passwordBox.value = items.passwd;
+            setEasyAccessLevel(items.easyAccess);
         }
     );
 };
 
+const showPasswordSection = () => {
+    if (eaOneClick.checked || eaZeroClick.checked)
+        passwordSection.classList.remove(HIDDEN);
+    else
+        passwordSection.classList.add(HIDDEN);
+};
+
+const loaded = () => {
+    restoreOptions();
+}
+
 const themeObserver = new MutationObserver(onThemeChange);
 themeObserver.observe(htmlElement, { attributes: true });
 changeTheme(htmlElement.getAttribute("data-bs-theme"));
-document.addEventListener("DOMContentLoaded", restoreOptions);
+document.addEventListener("DOMContentLoaded", loaded);
 saveButton.addEventListener("click", saveOptions);
+eaGroup.addEventListener("change", showPasswordSection);

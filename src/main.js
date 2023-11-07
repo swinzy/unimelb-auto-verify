@@ -1,60 +1,69 @@
-const checkOnMFAPage = () => {
+const enterAndClick = (input, value, button) => {
+    if (!input) return false;
+
+    // Put value in
+    input.value = value;
+
+    // Send event letting web page know value has been entered
+    let event = new Event("input", {
+        "bubbles": true,
+        "cancelable": true
+    });
+    input.dispatchEvent(event);
+
+    // Click button if possible
+    if (button) button.click();
+    return true;
+}
+
+const autofillUsername = () => {
+    // Find input and next button
+    const credentialInput = document.querySelector("input[name='identifier']");
+    const nextButton = document.querySelector("input[type='submit']");
+
+    // Autofill and continue
+    return enterAndClick(credentialInput, username.toUpperCase(), nextButton);
+}
+
+const autofillPassword = () => {
+    const credentialInput = document.querySelector("input[name='credentials.passcode']");
+    const verifyButton = document.querySelector("input[type='submit']");
+
+    // Autofill and continue
+    return enterAndClick(credentialInput, passwd, verifyButton);
+}
+
+const autofillMFA = () => {
     // Prompt for Google Authenticator
     var googleAuthElement = document.getElementsByClassName("challenge-authenticator--google_otp")
 
     // Page does not contain Google Authenticator prompt
     if (googleAuthElement.length === 0) {
-        console.log("UnimelbAutoVerify: Not on Google Authenticator page, extension standby.");
         return false;
     }
-    return true;
-}
-
-const autoFillMFA = () => {
-    // Show effective decoration
-    if (showDecor)
-        document.body.style.border = "5px solid green";
-    else
-        document.body.style.border = "0";
-
-    // Abort action if not on MFA page
-    if (!checkOnMFAPage()) return;
 
     // Element contains username
-    var identifierElement = document.querySelector('span[data-se="identifier"]');
+    var identifierElement = document.querySelector("span[data-se='identifier']");
 
     // Box to put MFA code
-    var credentialInput = document.querySelector('input[name="credentials.passcode"]');
+    var credentialInput = document.querySelector("input[name='credentials.passcode']");
 
     // Button to submit MFA code
-    var verifyButton = document.querySelector('input[type="submit"]');
-
-    // Abort action if:
-    // Page does not contain username, does not contain MFA code box, or otpSecret is not provided
-    if (!identifierElement || !credentialInput || !otpSecret || otpSecret === "") {
-        console.log("UnimelbAutoVerify: Page does not contain information required, action not applied.");
-        return;
-    }
+    var verifyButton = document.querySelector("input[type='submit']");
 
     if (identifierElement.innerText.toUpperCase() !== username.toUpperCase()) {
         console.log("UnimelbAutoVerify: Username does not match, action not applied.");
-        return;
+        return false;
     }
 
     var totp = new jsOTP.totp();
     var timeCode = totp.getOtp(otpSecret);
 
-    console.log(`OTP code ${timeCode} autofilled for user ${username.toUpperCase()}`);
+    console.log(`Autofilling OTP code ${timeCode} for user ${username.toUpperCase()}`);
 
-    // Put MFA code in
-    credentialInput.value = timeCode;
-
-    // Send event letting web page know code has been entered
-    let event = new Event("input", {
-        "bubbles": true,
-        "cancelable": true
-    });
-    credentialInput.dispatchEvent(event);
+    // Override auto click function
+    if (!enterAndClick(credentialInput, timeCode, null))
+        return false;
 
     // Automatically click "Verify" if possible
     if (autoSubmit && verifyButton)
@@ -62,8 +71,29 @@ const autoFillMFA = () => {
     else
         console.log("UnimelbAutoVerify: Verify button not found. Please manually submit the code.");
 
-    // Job done, stop autofill.
-    observer.disconnect();
+    return true;
+}
+
+const main = () => {
+    // Show effective decoration
+    if (showDecor)
+        document.body.style.border = "5px solid green";
+    else
+        document.body.style.border = "0";
+
+    if (easyAccess === "zc" && !hasAutofilledUsr) {
+        if (autofillUsername())
+            hasAutofilledUsr = true;
+    }
+
+    if (easyAccess === "zc" || easyAccess === "oc" && !hasAutofilledPwd) {
+        if (autofillPassword())
+            hasAutofilledPwd = true;
+    }
+
+    if (autofillMFA())
+        // Job done, stop autofill.
+        observer.disconnect();
 };
 
 const startAutofill = () => {
@@ -77,13 +107,18 @@ const startAutofill = () => {
 }
 
 // Every time DOM changes, check if it can autofill MFA
-const observer = new MutationObserver(autoFillMFA);
+const observer = new MutationObserver(main);
 
 // Do not expose otp secret to window
 let otpSecret = "";
 let username = "";
-let showDecor = true;
-let autoSubmit = true;
+let showDecor = false;
+let autoSubmit = false;
+let passwd = "";
+let easyAccess = "";
+
+let hasAutofilledPwd = false;
+let hasAutofilledUsr = false;
 
 // Load configurations and start autofill
 chrome.storage.sync.get(
@@ -92,6 +127,8 @@ chrome.storage.sync.get(
         username: "",
         showDecor: true,
         autoSubmit: true,
+        easyAccess: "",
+        passwd: "",
     },
     (items) => {
         // Only start extension when relevant information is ready
@@ -100,5 +137,7 @@ chrome.storage.sync.get(
         username = items.username.toUpperCase();
         showDecor = items.showDecor;
         autoSubmit = items.autoSubmit;
+        passwd = items.passwd;
+        easyAccess = items.easyAccess;
     }
 );

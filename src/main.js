@@ -26,6 +26,14 @@ const autofillUsername = () => {
 }
 
 const autofillPassword = () => {
+    // Prompt for Google Authenticator
+    var googleAuthElement = document.getElementsByClassName("challenge-authenticator--google_otp")
+
+    // Page contains Google Authenticator prompt, do not enter password here
+    if (googleAuthElement.length !== 0) {
+        return false;
+    }
+
     const credentialInput = document.querySelector("input[name='credentials.passcode']");
     const verifyButton = document.querySelector("input[type='submit']");
 

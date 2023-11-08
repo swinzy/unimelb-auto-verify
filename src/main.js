@@ -1,5 +1,8 @@
 const enterAndClick = (input, value, button) => {
-    if (!input) return false;
+    if (!input) {
+        console.log("No input found, not autofilling.");
+        return false;
+    }
 
     // Put value in
     input.value = value;
@@ -27,10 +30,26 @@ const autofillUsername = () => {
 
 const autofillPassword = () => {
     // Prompt for Google Authenticator
-    var googleAuthElement = document.getElementsByClassName("challenge-authenticator--google_otp")
+    const googleAuthElement = document.getElementsByClassName("challenge-authenticator--google_otp");
 
     // Page contains Google Authenticator prompt, do not enter password here
     if (googleAuthElement.length !== 0) {
+        console.log("On MFA page, not autofilling password.");
+        return false;
+    }
+
+    // Element contains username
+    const identifierElement = document.querySelector("span[data-se='identifier']");
+    if (!identifierElement) {
+        console.log("User does not exist. Password not autofilled.");
+        return false;
+    }
+
+    const pattern = /@.*/i;
+    const purifiedUsername = identifierElement.innerText.toUpperCase().replace(pattern, "");
+
+    if (purifiedUsername !== username.toUpperCase()) {
+        console.log("UAV: Username does not match, action not applied.");
         return false;
     }
 
@@ -47,19 +66,23 @@ const autofillMFA = () => {
 
     // Page does not contain Google Authenticator prompt
     if (googleAuthElement.length === 0) {
+        console.log("Not on MFA page, not autofilling MFA code.");
         return false;
     }
 
     // Element contains username
-    var identifierElement = document.querySelector("span[data-se='identifier']");
+    const identifierElement = document.querySelector("span[data-se='identifier']");
 
     // Box to put MFA code
-    var credentialInput = document.querySelector("input[name='credentials.passcode']");
+    const credentialInput = document.querySelector("input[name='credentials.passcode']");
 
     // Button to submit MFA code
-    var verifyButton = document.querySelector("input[type='submit']");
+    const verifyButton = document.querySelector("input[type='submit']");
 
-    if (identifierElement.innerText.toUpperCase() !== username.toUpperCase()) {
+    const pattern = /@.*/i;
+    const purifiedUsername = identifierElement.innerText.toUpperCase().replace(pattern, "");
+
+    if (purifiedUsername !== username.toUpperCase()) {
         console.log("UnimelbAutoVerify: Username does not match, action not applied.");
         return false;
     }
@@ -90,22 +113,32 @@ const main = () => {
         document.body.style.border = "0";
 
     if (easyAccess === "zc" && !hasAutofilledUsr) {
-        if (autofillUsername())
+        console.log("Trying to autofill username");
+        if (autofillUsername()) {
             hasAutofilledUsr = true;
+            console.log("Username has been autofilled!");
+        }
     }
 
     if (easyAccess === "zc" || easyAccess === "oc" && !hasAutofilledPwd) {
-        if (autofillPassword())
+        console.log("Trying to autofill password");
+        if (autofillPassword()) {
             hasAutofilledPwd = true;
+            console.log("Password has been autofilled!");
+        }
     }
 
-    if (autofillMFA())
+    console.log("Trying to autofill MFA code");
+    if (autofillMFA()) {
+        console.log("MFA code has been autofilled!");
+
         // Job done, stop autofill.
         observer.disconnect();
+    }
 };
 
 const startAutofill = () => {
-    var oktaSignInElement = document.getElementById("okta-sign-in");
+    const oktaSignInElement = document.getElementById("okta-sign-in");
 
     // Start observing DOM change
     observer.observe(oktaSignInElement, {

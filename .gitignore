@@ -1,1 +1,5 @@
+# IntelliJ editor files
 .idea/
+
+# Packed extensions
+web-ext-artifacts/

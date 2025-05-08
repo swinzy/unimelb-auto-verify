@@ -14,7 +14,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "unimelb-auto-verify@swz.dev",
-      "strict_min_version": "42.0"
+      "strict_min_version": "126.0"
     }
   },
   "permissions": ["storage", "activeTab"],

@@ -17,6 +17,8 @@ const accountSelect = document.getElementById("account-select-input");
 const importButton = document.getElementById("import-button");
 const importModalButton = document.getElementById("import-modal-button");
 const importModal = new bootstrap.Modal(document.getElementById("import-link-modal"));
+const uploadQrInput = document.getElementById("upload-qr-input");
+const uploadResult = document.getElementById("upload-result");
 
 const NORMAL_BTN = "btn-primary";
 const SUCCESS_BTN = "btn-success";
@@ -80,6 +82,7 @@ const resetImportModal = () => {
     migrationLinkInput.classList.remove(INVALID);
     accountSelect.options.length = 0;
     importButton.disabled = true;
+    uploadQrInput.value = "";
 }
 
 const importModalButtonClicked = () => {
@@ -125,6 +128,37 @@ const importMigrationLink = () => {
         secretBox.value = accountSelect.selectedOptions[0].value;
         resetImportModal();
         importModal.hide();
+    }
+};
+
+const uploadQrChanged = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const qr = new Image();
+    qr.src = URL.createObjectURL(file);
+    qr.onload = async () => {
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        canvas.width = qr.naturalWidth;
+        canvas.height = qr.naturalHeight;
+        context.drawImage(qr, 0, 0);
+        const data = context.getImageData(0, 0, qr.naturalWidth, qr.naturalHeight);
+        const decoded = jsQR(data.data, qr.naturalWidth, qr.naturalHeight);
+
+        if (!decoded) {
+            uploadResult.textContent = "Invalid QR Code";
+            return;
+        }
+
+        if (!decoded.data.startsWith("otpauth-migration://")) {
+            uploadResult.textContent = "Not a Google Authenticator QR Code";
+            return;
+        }
+
+        uploadResult.textContent = "";
+        migrationLinkInput.value = decoded.data;
+        await migrationLinkChanged();
     }
 };
 
@@ -192,3 +226,4 @@ migrationLinkInput.addEventListener("input", migrationLinkChanged);
 importModalButton.addEventListener("click", importModalButtonClicked)
 importButton.addEventListener("click", importMigrationLink);
 accountSelect.addEventListener("change", migrationAccountChanged);
+uploadQrInput.addEventListener("change", uploadQrChanged);

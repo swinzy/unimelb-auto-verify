@@ -155,12 +155,22 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="import-link-modal-label">Import from otpauth-migration Link</h1>
+                <h1 class="modal-title fs-5" id="import-link-modal-label">Import from Google Authenticator</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="migration-link-input" class="form-label">otpauth-migration link</label>
+                    <label for="upload-qr-input" class="form-label">Upload QR code</label>
+                    <input class="form-control" type="file" id="upload-qr-input">
+                    <div id="upload-result" class="form-text text-warning my-2"></div>
+                </div>
+                <div class="d-flex align-items-center text-body-tertiary my-3">
+                    <div class="flex-grow-1 border-top"></div>
+                    <span class="mx-3 small">OR</span>
+                    <div class="flex-grow-1 border-top"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="migration-link-input" class="form-label">Manually type in otpauth-migration link</label>
                     <input type="text" class="form-control mb-2" id="migration-link-input" placeholder="otpauth-migration://...">
                     <select class="form-select" multiple aria-label="account selection" id="account-select-input"></select>
                 </div>
@@ -173,6 +183,7 @@
     </div>
 </div>
 
+<script src="../libs/jsQR.min.js"></script>
 <script src="../libs/migration.js"></script>
 <script src="../libs/google-auth.js"></script>
 <script src="options.js"></script>

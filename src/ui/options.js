@@ -12,6 +12,9 @@ const eaOff = document.getElementById("ea-off");
 const eaOneClick = document.getElementById("ea-oc");
 const eaZeroClick = document.getElementById("ea-zc");
 
+const migrationLinkInput = document.getElementById("migration-link-input");
+const accountSelect = document.getElementById("account-select-input");
+
 const NORMAL_BTN = "btn-primary";
 const SUCCESS_BTN = "btn-success";
 const SAVED = "Saved";
@@ -25,7 +28,7 @@ const onThemeChange = (mutations) => {
             return;
         changeTheme(mutation.target.getAttribute("data-bs-theme"));
     }
-}
+};
 
 const changeTheme = (theme) => {
     const githubLogo = document.getElementById("github-logo");
@@ -37,13 +40,20 @@ const changeTheme = (theme) => {
         // Default/light theme
         githubLogo.src = "../res/github-mark.svg";
     }
-}
+};
+
+const showPasswordSection = () => {
+    if (eaOneClick.checked || eaZeroClick.checked)
+        passwordSection.classList.remove(HIDDEN);
+    else
+        passwordSection.classList.add(HIDDEN);
+};
 
 const getEasyAccessLevel = () => {
     if (eaZeroClick.checked) return "zc";
     if (eaOneClick.checked) return "oc";
     return "off";
-}
+};
 
 const setEasyAccessLevel = (easyAccessLevel) => {
     if (easyAccessLevel === "off") {
@@ -57,10 +67,25 @@ const setEasyAccessLevel = (easyAccessLevel) => {
     }
 
     showPasswordSection();
-}
+};
+
+const migrationLinkChanged = async () => {
+    try {
+        const accounts = await decodeMigrationUri(migrationLinkInput.value);
+        accountSelect.options.length = 0;
+        accounts.forEach((account, index) => {
+            const option = document.createElement("option");
+            option.value = index;
+            option.text = `${account.issuer || "Unknown"}: ${account.name || "Unnamed"}`;
+            accountSelect.appendChild(option);
+        });
+    } catch (e) {
+        console.error(e);
+    }
+};
 
 // Saves options to chrome.storage
-const saveOptions = () => {
+function saveOptions()  {
     chrome.storage.sync.set(
         {
             secret: secretBox.value,
@@ -84,19 +109,20 @@ const saveOptions = () => {
             }, TIMEOUT_BTN_RES);
         }
     );
-};
+}
 
 // Restores options using the preferences stored in chrome.storage.
-const restoreOptions = () => {
+function restoreOptions() {
+    const DEFAULT_CONFIG = {
+        secret: "",
+        username: "",
+        showDecor: true,
+        autoSubmit: true,
+        easyAccess: "",
+        passwd: "",
+    };
     chrome.storage.sync.get(
-        {
-            secret: "",
-            username: "",
-            showDecor: true,
-            autoSubmit: true,
-            easyAccess: "",
-            passwd: "",
-        },
+        DEFAULT_CONFIG,
         (items) => {
             secretBox.value = items.secret;
             usernameBox.value = items.username;
@@ -106,16 +132,9 @@ const restoreOptions = () => {
             setEasyAccessLevel(items.easyAccess);
         }
     );
-};
+}
 
-const showPasswordSection = () => {
-    if (eaOneClick.checked || eaZeroClick.checked)
-        passwordSection.classList.remove(HIDDEN);
-    else
-        passwordSection.classList.add(HIDDEN);
-};
-
-const loaded = () => {
+function loaded() {
     restoreOptions();
 }
 
@@ -125,3 +144,4 @@ changeTheme(htmlElement.getAttribute("data-bs-theme"));
 document.addEventListener("DOMContentLoaded", loaded);
 saveButton.addEventListener("click", saveOptions);
 eaGroup.addEventListener("change", showPasswordSection);
+migrationLinkInput.addEventListener("input", migrationLinkChanged);

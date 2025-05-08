@@ -1,3 +1,8 @@
+/* migration.js
+ * This library provide compiled protobuf library for decoding otpauth-migration links
+ * It is compiled with protobuf.js by ChatGPT 4o
+ */
+
 // Minimal standalone protobuf decoder for MigrationPayload (no external dependencies, CSP-safe)
 
 (function (global) {

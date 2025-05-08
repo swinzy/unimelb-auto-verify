@@ -14,6 +14,9 @@ const eaZeroClick = document.getElementById("ea-zc");
 
 const migrationLinkInput = document.getElementById("migration-link-input");
 const accountSelect = document.getElementById("account-select-input");
+const importButton = document.getElementById("import-button");
+const importModalButton = document.getElementById("import-modal-button");
+const importModal = new bootstrap.Modal(document.getElementById("import-link-modal"));
 
 const NORMAL_BTN = "btn-primary";
 const SUCCESS_BTN = "btn-success";
@@ -21,6 +24,8 @@ const SAVED = "Saved";
 const SAVE = "Save";
 const TIMEOUT_BTN_RES = 2000;
 const HIDDEN = "collapse";
+const INVALID = "is-invalid";
+const VALID = "is-valid";
 
 const onThemeChange = (mutations) => {
     for (const mutation of mutations) {
@@ -69,18 +74,57 @@ const setEasyAccessLevel = (easyAccessLevel) => {
     showPasswordSection();
 };
 
+const resetImportModal = () => {
+    migrationLinkInput.value = "";
+    migrationLinkInput.classList.remove(VALID);
+    migrationLinkInput.classList.remove(INVALID);
+    accountSelect.options.length = 0;
+    importButton.disabled = true;
+}
+
+const importModalButtonClicked = () => {
+    resetImportModal();
+};
+
 const migrationLinkChanged = async () => {
+    if (migrationLinkInput.value.length === 0) {
+        migrationLinkInput.classList.remove(VALID);
+        migrationLinkInput.classList.remove(INVALID);
+        accountSelect.options.length = 0;
+        importButton.disabled = true;
+        return;
+    }
+
     try {
         const accounts = await decodeMigrationUri(migrationLinkInput.value);
         accountSelect.options.length = 0;
-        accounts.forEach((account, index) => {
+        accounts.forEach(account => {
             const option = document.createElement("option");
-            option.value = index;
+            option.value = account.secret;
             option.text = `${account.issuer || "Unknown"}: ${account.name || "Unnamed"}`;
             accountSelect.appendChild(option);
         });
+        if (accounts.length > 0) {
+            migrationLinkInput.classList.remove(INVALID);
+            migrationLinkInput.classList.add(VALID);
+        }
     } catch (e) {
-        console.error(e);
+        migrationLinkInput.classList.remove(VALID);
+        migrationLinkInput.classList.add(INVALID);
+        accountSelect.options.length = 0;
+        importButton.disabled = true;
+    }
+};
+
+const migrationAccountChanged = () => {
+    importButton.disabled = (accountSelect.selectedOptions.length === 0);
+};
+
+const importMigrationLink = () => {
+    if (accountSelect.selectedOptions.length > 0) {
+        secretBox.value = accountSelect.selectedOptions[0].value;
+        resetImportModal();
+        importModal.hide();
     }
 };
 
@@ -145,3 +189,6 @@ document.addEventListener("DOMContentLoaded", loaded);
 saveButton.addEventListener("click", saveOptions);
 eaGroup.addEventListener("change", showPasswordSection);
 migrationLinkInput.addEventListener("input", migrationLinkChanged);
+importModalButton.addEventListener("click", importModalButtonClicked)
+importButton.addEventListener("click", importMigrationLink);
+accountSelect.addEventListener("change", migrationAccountChanged);

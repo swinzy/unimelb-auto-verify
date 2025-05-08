@@ -18,10 +18,11 @@
     }
   },
   "permissions": ["storage", "activeTab"],
+  "host_permissions": ["*://sso.unimelb.edu.au/*"],
   "content_scripts": [
     {
       "matches": ["*://sso.unimelb.edu.au/*"],
-      "js": ["sha.js", "main.js"]
+      "js": ["libs/sha.min.js", "main.js"]
     }
   ]
 }

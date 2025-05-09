@@ -30,8 +30,9 @@ I present, the `Unimelb Auto Verify` extension!
 1. Go to [Unimelb SSO Settings](https://sso.unimelb.edu.au/enduser/settings).
 2. Under `Security Methods`, set up `Google Authenticator` on your phone.
 3. On your phone, export your account to a QR code.
-4. Extract the OTP secret from the QR code. (The OTP secret should look like this `MTLZNDU2NZG5M4HA`)
-5. Take note of the OTP secret. You will need it later on.
+4. Save the QR code to your computer and directly use it in the extension options page.
+5. Alternatively you can scan the QR code and take note of its content. (It will be a link starting with `otpauth-migration://`)
+6. Now that you have a QR code or a link, proceed to install the extension.
 
 ### Install & Configure
 1. Install the extension.
@@ -54,6 +55,6 @@ I present, the `Unimelb Auto Verify` extension!
 - [X] Supports username verification
 - [X] Supports turning on/off effective decoration
 - [X] Supports turning on/off auto click <kbd>Verify</kbd>
-- [ ] Supports decoding Google Authenticator link
-- [ ] Supports decoding Google Authenticator QR code
+- [X] Supports decoding Google Authenticator link
+- [X] Supports decoding Google Authenticator QR code
 - [ ] Supports multi-account autofill

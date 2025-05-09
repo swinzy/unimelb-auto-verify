@@ -38,7 +38,7 @@ I present, the `Unimelb Auto Verify` extension!
 1. Install the extension.
 2. Open extension options for UnimelbAutoVerify.
 3. Select "Import from Google Authenticator" and either select your QR code or enter the link you obtained earlier.
-4. Select your account and hit <kbd>Import</kbd>
+4. Select your account and hit <kbd>Import</kbd>.
 5. Make sure the OTP secret is not empty and hit <kbd>Save</kbd>.
 
 ### Usage
